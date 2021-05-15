@@ -2,14 +2,12 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
 
-class BasePage(object):
+class BasePage:
 
     def __init__(self, driver):
-        self.driver = driver
+        self.drive = driver
 
-    def find_element(self, locator):
-        try:
-            wait = WebDriverWait(self, 5)
-            return wait.until(EC.presence_of_element_located(self.driver.find_element(*locator)))
-        except:
-            return 'Element not found'
+    def find_element(self, element):
+        wait = WebDriverWait(self, 5)
+        mobile_element = wait.until(EC.presence_of_element_located(element))
+        return mobile_element
