@@ -1,108 +1,57 @@
-import unittest
-from appium import webdriver
 import time
 
+from tests.BaseTest import BaseTest
+from helpers.Constants import Constants
 
-class LoginTest(unittest.TestCase):
-    def setUp(self):
-        desired_cap = {
-            "platformName": "Android",
-            "deviceName": "Pixel 3",
-            "app": "Users/thamiresneves/Downloads/hacker_news.apk",
-            "ensureWebviewsHavePages": True
-        }
 
-        self.instance = webdriver.Remote("http://localhost:4723/wd/hub", desired_cap)
-        time.sleep(5)
+class Test(BaseTest):
 
-    def tearDown(self):
-        self.instance.quit()
+    def test_login_with_empty_credentials(self):
+        self.app.mainPage.access_login_pop_up()
+        self.app.loginPage.click_submit_btn()
 
-    def test_login_with_empty_username_and_password(self):
-        hamburger_btn = self.instance.find_element_by_accessibility_id("Navigate up")
-        hamburger_btn.click()
-        time.sleep(3)
-
-        login_arrow = self.instance.find_element_by_id('com.leavjenn.hews:id/iv_expander')
-        login_arrow.click()
-        time.sleep(3)
-
-        login_btn = self.instance.find_element_by_id('com.leavjenn.hews:id/design_menu_item_text')
-        login_btn.click()
-        time.sleep(3)
-
-        submit_login_button = self.instance.find_element_by_id('android:id/button1')
-        submit_login_button.click()
-        time.sleep(3)
-
-        error_message = self.instance.find_element_by_id('com.leavjenn.hews:id/tv_prompt').text
-        expected_message = 'Catch you, anonymous!'
-        self.assertEqual(expected_message, error_message)
+        expected_message = Constants.ANONYMOUS_MESSAGE
+        self.assertEqual(expected_message, self.app.loginPage.get_error())
 
     def test_login_with_empty_username(self):
-        hamburger_btn = self.instance.find_element_by_accessibility_id("Navigate up")
-        hamburger_btn.click()
-        time.sleep(3)
+        self.app.mainPage.access_login_pop_up()
+        self.app.loginPage.fill_password(Constants.INVALID_PASSWORD)
+        self.app.loginPage.click_submit_btn()
 
-        login_arrow = self.instance.find_element_by_id('com.leavjenn.hews:id/iv_expander')
-        login_arrow.click()
-        time.sleep(3)
-
-        login_btn = self.instance.find_element_by_id('com.leavjenn.hews:id/design_menu_item_text')
-        login_btn.click()
-        time.sleep(3)
-
-        password_field = self.instance.find_element_by_id('com.leavjenn.hews:id/et_password')
-        password_field.send_keys('123456')
-
-        submit_login_button = self.instance.find_element_by_id('android:id/button1')
-        submit_login_button.click()
-        time.sleep(3)
-
-        error_message = self.instance.find_element_by_id('com.leavjenn.hews:id/tv_prompt').text
-        expected_message = 'Catch you, anonymous!'
-        self.assertEqual(expected_message, error_message)
+        expected_message = Constants.ANONYMOUS_MESSAGE
+        self.assertEqual(expected_message, self.app.loginPage.get_error())
 
     def test_login_with_empty_password(self):
-        hamburger_btn = self.instance.find_element_by_accessibility_id("Navigate up")
-        hamburger_btn.click()
-        time.sleep(3)
+        self.app.mainPage.access_login_pop_up()
+        self.app.loginPage.fill_username(Constants.INVALID_USERNAME)
+        self.app.loginPage.click_submit_btn()
 
-        login_arrow = self.instance.find_element_by_id('com.leavjenn.hews:id/iv_expander')
-        login_arrow.click()
-        time.sleep(3)
+        expected_message = Constants.SHORT_PASSWORD_MESSAGE
+        self.assertEqual(expected_message, self.app.loginPage.get_error())
 
-        login_btn = self.instance.find_element_by_id('com.leavjenn.hews:id/design_menu_item_text')
-        login_btn.click()
-        time.sleep(3)
+    def test_login_with_invalid_credentials(self):
+        self.app.mainPage.access_login_pop_up()
+        self.app.loginPage.fill_username(Constants.INVALID_USERNAME)
+        self.app.loginPage.fill_password(Constants.INVALID_PASSWORD)
+        self.app.loginPage.click_submit_btn()
 
-        username_field = self.instance.find_element_by_id('com.leavjenn.hews:id/et_user_name')
-        username_field.send_keys('Joao')
-
-        submit_login_button = self.instance.find_element_by_id('android:id/button1')
-        submit_login_button.click()
-        time.sleep(3)
-
-        error_message = self.instance.find_element_by_id('com.leavjenn.hews:id/tv_prompt').text
-        expected_message = 'You got a short…password'
-        self.assertEqual(expected_message, error_message)
+        expected_message = Constants.WRONG_USERNAME_PASSWORD_MESSAGE
+        self.assertEqual(expected_message, self.app.loginPage.get_error())
 
     def test_cancel_login(self):
-        hamburger_btn = self.instance.find_element_by_accessibility_id('Navigate up')
-        hamburger_btn.click()
+        self.app.mainPage.access_login_pop_up()
+        self.app.loginPage.click_cancel_btn()
+
+        search_button = self.app.mainPage.get_search_button()
+        self.assertTrue(search_button.is_displayed())
+
+    def test_login_with_valid_credentials(self):
+        self.app.mainPage.access_login_pop_up()
+        self.app.loginPage.login(Constants.VALID_USERNAME, Constants.VALID_PASSWORD)
+
         time.sleep(3)
+        self.app.mainPage.click_hamburger_menu()
 
-        login_arrow = self.instance.find_element_by_id('com.leavjenn.hews:id/iv_expander')
-        login_arrow.click()
-        time.sleep(3)
+        logged_user = Constants.VALID_USERNAME
+        self.assertEqual(logged_user, self.app.mainPage.get_logged_user())
 
-        login_btn = self.instance.find_element_by_id('com.leavjenn.hews:id/design_menu_item_text')
-        login_btn.click()
-        time.sleep(3)
-
-        cancel_login_button = self.instance.find_element_by_id('android:id/button2')
-        cancel_login_button.click()
-        time.sleep(1)
-
-        search_btn = self.instance.find_element_by_id('com.leavjenn.hews:id/action_search')
-        self.assertTrue(search_btn.is_displayed())

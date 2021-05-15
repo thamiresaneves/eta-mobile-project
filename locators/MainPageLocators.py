@@ -9,3 +9,4 @@ class MainPageLocators(object):
     # Menu locators
     ARROW_BTN = (MobileBy.ID, 'com.leavjenn.hews:id/iv_expander')
     LOGIN_BTN = (MobileBy.ID, 'com.leavjenn.hews:id/design_menu_item_text')
+    LOGGED_USER_ACCOUNT = (MobileBy.ID, 'com.leavjenn.hews:id/tv_account')

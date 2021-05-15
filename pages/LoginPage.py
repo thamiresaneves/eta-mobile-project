@@ -1,8 +1,13 @@
-from pages.BasePage import BasePage
+import time
+
 from locators.LoginLocators import LoginLocators
+from pages.BasePage import BasePage
 
 
 class LoginPage(BasePage):
+
+    def __init__(self, driver):
+        self.driver = driver
 
     def fill_username(self, username):
         username_field = BasePage.find_element(self.driver, LoginLocators.USERNAME_FIELD)
@@ -21,4 +26,16 @@ class LoginPage(BasePage):
         cancel_btn.click()
 
     def get_error(self):
+        time.sleep(2)
         return BasePage.find_element(self.driver, LoginLocators.FEEDBACK_MESSAGE).text
+
+    def login(self, username, password):
+        self.fill_username(username)
+        self.fill_password(password)
+        self.click_submit_btn()
+
+    def get_username(self):
+        return BasePage.find_element(self.driver, LoginLocators.USERNAME_FIELD).text
+
+    def get_password(self):
+        return BasePage.find_element(self.driver, LoginLocators.PASSWORD_FIELD).text
