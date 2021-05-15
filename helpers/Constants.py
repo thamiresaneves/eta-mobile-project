@@ -7,7 +7,7 @@ class Constants:
 
     INVALID_USERNAME = "joao"
     INVALID_PASSWORD = "123456"
-    VALID_USERNAME = "testmobile"
-    VALID_PASSWORD = "passwordmobile"
+    VALID_USERNAME = "testemobile"
+    VALID_PASSWORD = "testemobile"
     PHONE_NUMBER = "5551234567"
     PASSWORD_ENCRYPTED = "•••••••••••"
